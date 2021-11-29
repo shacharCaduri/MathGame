@@ -1,0 +1,16 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "WELCOME TO THE MATH GAME";
+}
+
+    <div class="text-center">
+        <h1 class="display-4">WELCOME TO THE MATH GAME</h1>
+        <br />
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <h5>Please Login</h5>
+            <h6>(if not registered - Please Register)</h6>
+        }
+        <br />
+    </div>

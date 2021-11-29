@@ -1,0 +1,43 @@
+﻿@page
+@model MathDrawing.Pages.UsersModel
+@{
+    ViewData["Title"] = "Users";
+    @functions{
+        public List<Users> _usersList { get; set; }
+        public void OnPost(Users item)
+        {
+            _usersList.Add(item);
+        }
+        public void onGet()
+        {
+            
+        }
+        }
+        }
+        <h1>Users</h1>
+        <br />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Users[0].Name)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Users)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <form asp-page-handler="addFriend" asp-route-id=@item.Id method="post">
+                                <button class="btn btn-light">ADD</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+

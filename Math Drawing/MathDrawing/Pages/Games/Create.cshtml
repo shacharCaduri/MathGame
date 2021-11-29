@@ -1,0 +1,38 @@
+﻿@page
+@model MathDrawing.Pages.Games.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create a Game</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Game.Name" class="control-label"></label>
+                <input asp-for="Game.Name" class="form-control" />
+                <span asp-validation-for="Game.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Game.Level" class="control-label"></label>
+                <select asp-for="Game.Level" asp-items="Html.GetEnumSelectList<MathDrawing.Classes.Level>()">
+                    <option selected="selected" value="">Select Level</option>
+                </select>
+                <span asp-validation-for="Game.Level" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<link href="~/css/site.css" rel="stylesheet" />
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

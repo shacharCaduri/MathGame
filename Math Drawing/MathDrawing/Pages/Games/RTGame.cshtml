@@ -1,0 +1,141 @@
+﻿@page
+@model MathDrawing.Pages.Games.RTGameModel
+@{
+    ViewData["Title"] = "RTGame";
+}
+<header>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/site.js"></script>
+    <style>
+        .countdown, .timer {
+            font-size: larger;
+            font-family: 'Berlin Sans FB';
+        }
+
+        h1 {
+            font-size: larger;
+            font-family: 'Berlin Sans FB';
+            text-align:center;
+        }
+
+        .finish {
+            display: none;
+            font-size: larger;
+            font-family: 'Berlin Sans FB';
+            color:royalblue;
+        }
+    </style>
+</header>
+<body>
+    <h1>MATH GAME</h1>
+    <h1>Game Name: @Model.GName</h1>
+    <br />
+    @if (Model.Equation == null)
+    {
+        <form asp-page-handler="start" method="post">
+            <input type="hidden" value="@Model.Player.PlayerID" name="PId" />
+            <input type="hidden" value="@Model.RoomId2" name="RId" />
+            <input type="hidden" value="@Model.GName" name="GameName" />
+            <input type="submit" value="START GAME" />
+        </form>
+    }
+    <br />
+    @if (Model.Equation != null)
+    {
+        <form method="post" asp-page-handler="result">
+            <input type="hidden" value="@Model.Player.PlayerID" name="PId" />
+            <input type="hidden" value="@Model.RoomId2" name="RId" />
+            <input type="hidden" value="@Model.GName" name="GameName" />
+            <input type="hidden" name="Min" />
+            <input type="hidden" name="Sec" />
+            <div class="finish">
+                <span>You finished the Game!</span><br />
+                <span>Your total score is: @Model.Player.Score</span><br />
+                <a asp-page="/Games/Index">PLAY AGAIN</a>
+                <br /> <br />
+                <a asp-page="/Games/ScoreTable" asp-route-roomId="@Model.RoomId2">View All Players Score</a>
+            </div>
+            <span class="timer">Timer: </span><span class="countdown"><span name="min">@Model.TimerMin</span><span>:</span><span name="sec">@Model.TimerSec</span></span>
+            <div class="container">
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-2"><span>The Equation: @Model.Equation.EquationQ</span></div>
+                    <div class="col-4">
+                        <input type="text" name="result" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-6">
+                    <input type="submit" value="Send Result" class="sendResult" />
+                </div>
+            </div>
+            <br />
+        </form>
+        <form method="post" asp-page-handler="skip">
+            <input type="hidden" value="@Model.Player.PlayerID" name="PId" />
+            <input type="hidden" value="@Model.RoomId2" name="RId" />
+            <input type="hidden" value="@Model.GName" name="GameName" />
+            <input type="hidden" name="Min" />
+            <input type="hidden" name="Sec" />
+            <input type="submit" value="Skip Question" class="skipQ" />
+        </form>
+    }
+    <div class="row">
+        <div class="col-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6" style="border:5px solid black">
+            <ul name="messagebox" id="messagesList"></ul>
+        </div>
+    </div>
+    <script>
+        if (@Model.flagRoomNotifications== 4) {
+            $(".skipQ").css("display", "none");
+            $(".countdown").css("display", "none");
+            $(".sendResult").css("display", "none");
+            $(".timer").css("display", "none");
+            $(".col-4").css("display", "none");
+            $(".col-2").css("display", "none");
+            $(".finish").css("display", "block");
+        }
+            startRoomNotifications(@Model.RoomId2,@Model.flagRoomNotifications);
+            var timer2 = @Model.TimerMin + ":" + @Model.TimerSec; //דקה
+            if (@Model.TimerMin!= "x") {
+                var interval = setInterval(function () {
+                    var timer = timer2.split(':');
+                    //by parsing integer, I avoid all extra string processing
+                    var minutes = parseInt(timer[0], 10);
+                    var seconds = parseInt(timer[1], 10);
+                    --seconds;
+                    minutes = (seconds < 0) ? --minutes : minutes;
+                    seconds = (seconds < 0) ? 59 : seconds;
+                    seconds = (seconds < 10) ? '0' + seconds : seconds;
+                    //minutes = (minutes < 10) ?  minutes : minutes;
+                    $('.countdown').html(minutes + ':' + seconds);
+                    if (minutes < 0) clearInterval(interval);
+                    //check if both minutes and seconds are 0
+                    if ((seconds <= 0) && (minutes <= 0)) {
+                        clearInterval(interval);
+                        $(".skipQ").css("display", "none");
+                        $(".sendResult").css("display", "none");
+                        $(".timer").css("display", "none");
+                        $(".col-4").css("display", "none");
+                        $(".col-2").css("display", "none");
+                        $(".finish").css("display", "block");
+                        $(".col-6").css("display", "none");
+                        $(".countdown").css("display", "none");
+                    }
+                    timer2 = minutes + ':' + seconds;
+                    $("input[name='Min']").val(minutes);
+                    $("input[name='Sec']").val(seconds);
+                    }, 1000);
+                }
+    </script>
+</body>
+

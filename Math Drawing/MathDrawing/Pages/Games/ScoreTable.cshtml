@@ -1,0 +1,54 @@
+﻿@page
+@model MathDrawing.Pages.Games.ScoreTableModel
+@{
+    ViewData["Title"] = "ScoreTable";
+}
+    <header>
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <style>
+            h1 {
+                font-size: larger;
+                font-family: 'Berlin Sans FB';
+            }
+
+            body {
+                text-align: center;
+            }
+
+            th, td {
+                border: 1px solid black;
+                padding: 5px;
+            }
+
+            table {
+                border: 1px solid black;
+                border-collapse: collapse;
+                margin: auto;
+            }
+        </style>
+    </header>
+<body>
+    <h1>@Model.GameName - Score's Table</h1>
+    <br />  <br />
+            <table>
+                <tr>
+                    <th>User</th>
+                    <th>Score</th>
+                </tr>
+                @foreach (var item in Model.PlayersInGame)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PlayerUser.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Score)
+                        </td>
+                        </tr>
+                 }
+
+                </table>
+
+    
+</body>
+
